@@ -1,58 +1,134 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# HDC Events — Laravel (Vídeos #1 ao #10)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Projeto desenvolvido seguindo a série do **Matheus Battisti** no YouTube. Este guia cobre tudo que você precisa para rodar a aplicação no seu computador e validar os checkpoints com o **Prof. Dr. Eder Pansani**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Pré-requisitos
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Antes de começar, certifique-se de ter instalado:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [PHP 8+](https://www.php.net/)
+- [Composer](https://getcomposer.org/)
+- [XAMPP](https://www.apachefriends.org/) (ou outro servidor MySQL local)
+- [Git](https://git-scm.com/)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 1. Clonar o Repositório
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Abra o terminal na pasta de destino (ex: `/var/www/html/AulaWEB/VTPDWE2/`) e execute:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/dedspedronila/Laravel_Praticando_Eder.git
+cd Laravel_Praticando_Eder
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 2. Instalar as Dependências
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+A pasta `vendor` não vai para o repositório (está no `.gitignore`), então você precisa baixá-la localmente:
 
-## Code of Conduct
+```bash
+composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 3. Configurar o `.env`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Copie o arquivo de exemplo para criar o seu `.env`:
 
-## License
+```bash
+# Linux/Mac
+cp .env.example .env
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Windows (Prompt de Comando)
+copy .env.example .env
+```
+
+Abra o `.env` gerado e ajuste o bloco do banco de dados:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=hdcevents
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+> **Atenção (XAMPP):** Se você usa o XAMPP padrão, deixe `DB_PASSWORD=` em branco mesmo — sem nada após o `=`.
+
+---
+
+## 4. Gerar a Chave da Aplicação
+
+Esse comando preenche o `APP_KEY` no `.env`. Sem ele, o Laravel retorna um **Erro HTTP 500**:
+
+```bash
+php artisan key:generate
+```
+
+---
+
+## 5. Criar o Banco de Dados e Rodar as Migrations
+
+1. Acesse o **phpMyAdmin**: `http://localhost/phpmyadmin`
+2. Crie um banco de dados vazio chamado exatamente `hdcevents`
+   - Collation recomendada: `utf8mb4_unicode_ci`
+3. Volte ao terminal e execute:
+
+```bash
+php artisan migrate
+```
+
+### ✅ Validação exigida pelo professor (pág. 30 do roteiro)
+
+Execute o comando **uma segunda vez**. O resultado esperado é:
+
+```
+INFO  Nothing to migrate.
+```
+
+Esse output confirma que a conexão com o banco está funcionando corretamente e todas as migrations já foram aplicadas.
+
+---
+
+## 6. Iniciar o Servidor
+
+```bash
+php artisan serve
+```
+
+A aplicação ficará disponível em `http://127.0.0.1:8000`.
+
+---
+
+## 7. Links para os Checkpoints
+
+Deixe estas abas abertas no navegador durante a avaliação:
+
+| Aula(s) | Descrição | URL |
+|---|---|---|
+| #3 | Rotas e Views simples | `http://127.0.0.1:8000/contact` |
+| #4, #5, #6 | Loops, Parâmetros e Banner | `http://127.0.0.1:8000/` |
+| #8 | Filtro dinâmico de busca (Query String) | `http://127.0.0.1:8000/produtos?search=camisa` |
+| #8 | Parâmetro dinâmico de URL | `http://127.0.0.1:8000/produtos_teste/5` |
+| #9 | Layout Global + Menu + Controller | `http://127.0.0.1:8000/events/create` |
+
+---
+
+## Resumo dos Comandos
+
+```bash
+git clone https://github.com/dedspedronila/Laravel_Praticando_Eder.git
+cd Laravel_Praticando_Eder
+composer install
+cp .env.example .env   # ou: copy .env.example .env (Windows)
+# configure DB_DATABASE, DB_USERNAME e DB_PASSWORD no .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
