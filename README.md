@@ -1,58 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Projeto Laravel - Praticando P3 (Aulas 21 a 31)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este módulo armazena o progresso prático das **aulas 21 a 31** do [Curso de Laravel do Matheus Battisti - Hora de Codar](https://www.youtube.com/watch?v=5VNriuM1eOs&list=PLnDvRpP8BnewYKI1n2chQrrR4EYiJKbUG&index=31). O deploy foi isolado em uma nova estrutura para preservar o histórico e os arquivos das etapas anteriores.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🛠️ Tecnologias e Recursos Aplicados
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Recurso | Detalhe |
+|---|---|
+| **Framework** | Laravel |
+| **Ambiente** | AWS EC2 (Ubuntu Server) |
+| **Servidor Web** | Apache |
+| **CI/CD** | GitHub Actions (SSH + Rsync) |
+| **Banco de Dados** | MySQL |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🚀 Fluxo de Deploy Automatizado
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+A branch `feature/aula21-31` está configurada com uma pipeline de CI/CD que realiza o deploy automático a cada `git push`. O workflow executa as seguintes etapas:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. Sincroniza os arquivos locais com `/var/www/html/praticandop3/` na EC2.
+2. Ignora `/vendor/`, `/node_modules/` e o arquivo `.env`.
+3. Executa comandos remotos via SSH: `composer install`, `migrate` e limpeza de cache do Laravel.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Como atualizar o servidor no dia a dia
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git add .
+git commit -m "feat: descrição da nova funcionalidade da aula"
+git push
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 🎛️ Configuração Inicial Obrigatória na EC2
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Como o projeto foi movido para uma pasta nova (`praticandop3`), é necessário preparar o ambiente diretamente no servidor **uma única vez**. Conecte-se via SSH e siga os passos abaixo.
 
-## Code of Conduct
+### 1. Criar o diretório e ajustar permissões
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+sudo mkdir -p /var/www/html/praticandop3
+sudo chown -R ubuntu:www-data /var/www/html/praticandop3
+sudo chmod -R 775 /var/www/html/praticandop3
+```
 
-## Security Vulnerabilities
+### 2. Configurar o arquivo `.env`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+O `.env` é excluído pelo deploy por segurança. Crie-o manualmente copiando do projeto anterior e ajuste as variáveis (principalmente o nome do banco):
 
-## License
+```bash
+cp /var/www/html/praticandop2/.env /var/www/html/praticandop3/.env
+nano /var/www/html/praticandop3/.env
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+> ⚠️ Ajuste `DB_DATABASE` para não conflitar com o banco do `praticandop2`.
+
+### 3. Ajustar permissões de escrita (pós-primeiro-deploy)
+
+Assim que o primeiro deploy do GitHub Actions concluir com sucesso:
+
+```bash
+cd /var/www/html/praticandop3
+sudo chmod -R 775 storage bootstrap/cache
+```
+
+### 4. Apontar o Apache para a nova pasta
+
+Edite o Virtual Host:
+
+```bash
+sudo nano /etc/apache2/sites-available/000-default.conf
+```
+
+Altere o `DocumentRoot` para:
+
+```
+DocumentRoot /var/www/html/praticandop3/public
+```
+
+Salve (`Ctrl+O` → `Enter` → `Ctrl+X`) e reinicie o Apache:
+
+```bash
+sudo systemctl restart apache2
+```
+
+
+---
+
+## 📌 Próximos Passos
+
+```bash
+# Após qualquer alteração local:
+git add .
+git commit -m "feat: descrição da funcionalidade"
+git push
+```
+
+O GitHub Actions cuida do resto — sincronização, dependências e cache. 🚀

@@ -2,7 +2,7 @@ name: Push-to-EC2
 on:
   push:
     branches:
-      - feature/aula11-20
+      - feature/aula21-31
 
 jobs:
   deploy:
@@ -18,7 +18,20 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
           ARGS: "-rltgoDzvO"
           SOURCE: "./"
-          REMOTE_HOST: "ec2-34-235-166-45.compute-1.amazonaws.com"
+          REMOTE_HOST: "ec2-13-221-88-102.compute-1.amazonaws.com"
           REMOTE_USER: "ubuntu"
-          TARGET: "/var/www/html/praticandop2/"
+          TARGET: "/var/www/html/praticandop3/"
           EXCLUDE: "/vendor/, /node_modules/, .env, /storage/logs/, /storage/framework/"
+
+      - name: Executing remote ssh commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: "ec2-13-221-88-102.compute-1.amazonaws.com"
+          username: "ubuntu"
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /var/www/html/praticandop3/
+            composer install --no-dev --optimize-autoloader
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
