@@ -26,6 +26,7 @@
                 <h5 class="card-title">{{ $event->title }}</h5>
                 <p class="card-participants">{{ count($event->users) }} Participantes</p>
                 <a href="/events/{{ $event->id }}" class="btn btn-primary">Saber Mais</a>
+                <p>olha o teste</p>
             </div>
         </div>
         @endforeach
