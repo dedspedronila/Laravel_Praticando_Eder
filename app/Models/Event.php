@@ -11,6 +11,16 @@ class Event extends Model
         'items' => 'array'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'date' => 'datetime', // ISSO AQUI resolve o seu problema!
+            'items' => 'array',   // Garante que o array de infraestrutura funcione também
+        ];
+    }
+
+    protected $guarded = [];
+
     protected $dates = ['date'];
 
 
