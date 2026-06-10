@@ -22,12 +22,4 @@ Route::get('/produtos_teste/{id?}', function($id = null) {
     return view('product', ['id' => $id]);
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
+Route::get('/dashboard', [EventController::class, 'dashboard'])->middleware('auth');
