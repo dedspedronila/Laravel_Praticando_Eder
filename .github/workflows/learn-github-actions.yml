@@ -31,7 +31,13 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /var/www/html/praticandop3/
+
+            mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
+            chmod -R 775 storage bootstrap/cache
+
             composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+
+            php artisan cache:clear
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
