@@ -15,7 +15,7 @@
     <h2>Buscando por: {{ $search }}</h2>
     @else
     <h2>Próximos Eventos</h2>
-    <h2>testei aqui</h2>
+    <h2>Testando notebook com novo carregador</h2>
     <p class="subtitle">Veja os eventos dos próximos dias</p>
     @endif
     <div id="cards-container" class="row">
